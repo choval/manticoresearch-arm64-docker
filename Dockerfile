@@ -1,9 +1,10 @@
-FROM ubuntu:bionic
+FROM ubuntu:focal
 
 RUN groupadd -r manticore && useradd -r -g manticore manticore
 
 ENV GOSU_VERSION 1.11
 ENV MANTICORE_VERSION 3.6.0
+ENV DEB_URI https://repo.manticoresearch.com/repository/manticoresearch_focal_dev/pool/m/manticore/manticore_3.6.1-210812-f7e04fced_arm64.deb
 
 RUN set -x \
     && apt-get update && apt-get install -y --no-install-recommends ca-certificates wget gnupg dirmngr && rm -rf /var/lib/apt/lists/* \
@@ -17,9 +18,12 @@ RUN set -x \
     && chmod +x /usr/local/bin/gosu \
     && gosu nobody true \
     && wget https://repo.manticoresearch.com/manticore-repo.noarch.deb \
-    && dpkg -i manticore-repo.noarch.deb \
-    && apt-key adv --fetch-keys 'https://repo.manticoresearch.com/GPG-KEY-manticore' && apt update && apt install -y manticore \
-    && mkdir -p /var/run/manticore && mkdir -p /var/lib/manticore/replication \
+    && dpkg -i manticore-repo.noarch.deb
+RUN wget $DEB_URI \
+    && dpkg -i `basename $DEB_URI` \
+    && rm `basename $DEB_URI` \
+    && rm manticore-repo.noarch.deb
+RUN mkdir -p /var/run/manticore && mkdir -p /var/lib/manticore/replication \
     && apt-get update && apt install -y  libexpat1 libodbc1 libpq5 openssl libcrypto++6 libmysqlclient20 mysql-client \
     && apt-get purge -y --auto-remove ca-certificates wget \
     && rm -rf /var/lib/apt/lists/* \
