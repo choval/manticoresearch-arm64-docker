@@ -1,3 +1,34 @@
+# Manticore Search Docker image for ARM64
+
+This docker image uses a dev version of Manticore Search for ARM64.
+
+Docker-compose example:
+
+```yaml
+version: "2.2"
+services:
+  web:
+    image: manticoresearch-arm64:latest
+    build: https://github.com/choval/manticoresearch-arm64-docker.git#master
+    restart: unless-stopped
+    ports:
+      - 9306:9306
+      - 9308:9308
+    ulimits:
+      nproc: 65535
+      nofile:
+         soft: 65535
+         hard: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - ./data:/var/lib/manticore
+      - ./manticore.conf:/etc/manticoresearch/manticore.conf 
+```
+
+---
+
 # Manticore Search Docker image
 
 This is the git repo of official [Docker image](https://hub.docker.com/r/manticoresearch/manticore/) for [Manticore Search](https://github.com/manticoresoftware/manticoresearch). 
