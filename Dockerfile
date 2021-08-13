@@ -24,7 +24,7 @@ RUN wget $DEB_URI \
     && rm `basename $DEB_URI` \
     && rm manticore-repo.noarch.deb
 RUN mkdir -p /var/run/manticore && mkdir -p /var/lib/manticore/replication \
-    && apt-get update && apt install -y  libexpat1 libodbc1 libpq5 openssl libcrypto++6 libmysqlclient20 mysql-client \
+    && apt-get update && apt install -y  libexpat1 libodbc1 libpq5 openssl libcrypto++6 mysql-client \
     && apt-get purge -y --auto-remove ca-certificates wget \
     && rm -rf /var/lib/apt/lists/* \
     && rm -f /usr/bin/mariabackup /usr/bin/mysqldump /usr/bin/mysqlslap /usr/bin/mysqladmin /usr/bin/mysqlimport /usr/bin/mysqlshow /usr/bin/mbstream /usr/bin/mysql_waitpid /usr/bin/innotop /usr/bin/mysqlaccess /usr/bin/mytop /usr/bin/mysqlreport /usr/bin/mysqldumpslow /usr/bin/mysql_find_rows /usr/bin/mysql_fix_extensions /usr/bin/mysql_embedded /usr/bin/mysqlcheck \
