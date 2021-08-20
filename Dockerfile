@@ -4,7 +4,6 @@ RUN groupadd -r manticore && useradd -r -g manticore manticore
 
 ENV GOSU_VERSION 1.11
 ENV MANTICORE_VERSION 3.6.0
-ENV DEB_URI https://repo.manticoresearch.com/repository/manticoresearch_focal_dev/pool/m/manticore/manticore_3.6.1-210812-f7e04fced_arm64.deb
 
 RUN set -x \
     && apt-get update && apt-get install -y --no-install-recommends ca-certificates wget gnupg dirmngr && rm -rf /var/lib/apt/lists/* \
@@ -19,7 +18,9 @@ RUN set -x \
     && gosu nobody true \
     && wget https://repo.manticoresearch.com/manticore-repo.noarch.deb \
     && dpkg -i manticore-repo.noarch.deb
-RUN wget $DEB_URI \
+RUN export VERSION=`wget -q -O- https://repo.manticoresearch.com/service/rest/repository/browse/manticoresearch_focal_dev/packages/m/manticore/|grep href|tail -n1|sed -e 's/<[^>]*>//g'|sed -e 's/ *//g'` \
+    && export DEB_URI=https://repo.manticoresearch.com/repository/manticoresearch_focal_dev/pool/m/manticore/manticore_${VERSION}_arm64.deb \
+    && wget -q $DEB_URI \
     && dpkg -i `basename $DEB_URI` \
     && rm `basename $DEB_URI` \
     && rm manticore-repo.noarch.deb
